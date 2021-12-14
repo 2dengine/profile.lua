@@ -6,8 +6,11 @@ Once you are done profiling, a report is generated, describing:
 1. which functions were called most frequently and
 2. how much time was spent executing each function
 
+# Documentation
+The full documentation is available at: https://2dengine.com/?p=profile
+
 # Compatibility
-The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees about its accuracy.
+The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
 Use at your own discretion!
 LuaJIT optimizations must be off when using the profiler and coroutines are unsupported.
 
