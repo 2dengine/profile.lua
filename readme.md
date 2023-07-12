@@ -3,8 +3,8 @@ profile.lua is a small, non-intrusive module for finding bottlenecks in your Lua
 The profiler is used by making minimal changes to your existing code.
 Basically, you require the profile.lua file and specify when to start or stop collecting data.
 Once you are done profiling, a report is generated, describing:
-1. which functions were called most frequently and
-2. how much time was spent executing each function
+* which functions were called most frequently and
+* how much time was spent executing each function
 
 # Documentation
 The full documentation is available at: https://2dengine.com/?p=profile
@@ -12,7 +12,7 @@ The full documentation is available at: https://2dengine.com/?p=profile
 # Compatibility
 The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
 Use at your own discretion!
-LuaJIT optimizations must be off when using the profiler and coroutines are unsupported.
+LuaJIT optimizations must be off when using the profiler and co-routines are unsupported.
 
 # API
 ## profile.report(rows)
@@ -94,8 +94,7 @@ for t in ipairs(profiler.query(10)) do
 end
 ~~~~
 
-Credits
-=======
+# Credits
 0x25a0
 grump
 Roland Yonaba
