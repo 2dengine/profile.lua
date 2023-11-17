@@ -1,18 +1,18 @@
 # Profile.lua
-profile.lua is a small, non-intrusive module for finding bottlenecks in your Lua code.
-The profiler is used by making minimal changes to your existing code.
-Basically, you require the profile.lua file and specify when to start or stop collecting data.
+profile.lua is a small module written in pure and used for finding bottlenecks in your Lua code.
+To use the profiler, you need to require the profile.lua file and specify when to start or stop collecting data.
 Once you are done profiling, a report is generated, describing:
 * which functions were called most frequently and
 * how much time was spent executing each function
 
-# Documentation
-The full documentation is available at: https://2dengine.com/?p=profile
-
 # Compatibility
+LuaJIT optimizations need to be disabled when using the profiler and co-routines are not supported.
 The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
 Use at your own discretion!
-LuaJIT optimizations must be off when using the profiler and co-routines are unsupported.
+
+# Documentation
+The full documentation is available at:
+https://2dengine.com/doc/profile.html
 
 # API
 ## profile.report(rows)
