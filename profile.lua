@@ -113,6 +113,7 @@ end
 --- This is an internal function.
 -- @tparam function a First function
 -- @tparam function b Second function
+-- @treturn boolean True if "a" should rank higher than "b"
 function profile.comp(a, b)
   local dt = _telapsed[b] - _telapsed[a]
   if dt == 0 then
@@ -121,8 +122,10 @@ function profile.comp(a, b)
   return dt < 0
 end
 
---- Iterates all functions that have been called since the profile was started.
+--- Generates a report of functions that have been called since the profile was started.
+-- Returns the report as a numeric table of rows containing the rank, function label, number of calls, total execution time and source code line number.
 -- @tparam[opt] number limit Maximum number of rows
+-- @treturn table Table of rows
 function profile.query(limit)
   local t = {}
   for f, n in pairs(_ncalls) do
@@ -148,8 +151,10 @@ end
 
 local cols = { 3, 29, 11, 24, 32 }
 
---- Generates a text report.
+--- Generates a text report of functions that have been called since the profile was started.
+-- Returns the report as a string that can be printed to the console.
 -- @tparam[opt] number limit Maximum number of rows
+-- @treturn string Text-based profiling report
 function profile.report(n)
   local out = {}
   local report = profile.query(n)
