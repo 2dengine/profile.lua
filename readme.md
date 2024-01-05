@@ -1,5 +1,5 @@
 # Profile.lua
-profile.lua is a small module written in pure and used for finding bottlenecks in your Lua code.
+profile.lua is a small module used for finding bottlenecks in your Lua code.
 To use the profiler, you need to require the profile.lua file and specify when to start or stop collecting data.
 Once you are done profiling, a report is generated, describing:
 * which functions were called most frequently and
