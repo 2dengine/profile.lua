@@ -1,0 +1,107 @@
+<html>
+<head>
+<style>
+body { background-color:#fff; padding: 0; margin: 0; }
+table { border:1px solid #ccc; width:100%; padding:1em; background-color:#eee; }
+th { border-bottom:1px dashed #ccc; text-align:left; padding-top:0.5em; }
+td { vertical-align: top; }
+tr td:first-of-type { width:4em; white-space:nowrap; }
+.arg { color:#c00; }
+.type { color:#00f; }
+.meta, th { color:#aaa; }
+.page { clear: both; }
+.page, .menu, .cont { box-sizing:border-box; display:block; margin: 0; }
+.menu, .cont { overflow-x:hidden; overflow-y:auto; height: 100%; max-height: 100%; padding: 1em; }
+.menu { float:left; width:25%; background-color:#eee; border-right:1px solid #ccc; }
+.cont { float:right; width:75%; }
+.see { font-size: 0.9em; padding: 0.5em; }
+h1,h2,h3 { padding: 1em 0 0 0; margin: 0; }
+ul { padding: 0.5 1em; margin: 0; }
+hr { border-top: 1px solid #ccc; }
+</style>
+</head>
+<body>
+<div class='page'>
+<div class='cont'>
+<h1>profile.lua</h1>
+Simple profiler written in Lua.<br>Developed and maintained by <a href="https://2dengine.com">2dengine.com</a>
+<br>Last updated on January 04, 2024<br><br>
+<h2 id='profile'>profile</h2>
+Simple profiler written in Lua.<br>
+<table>
+<tr><td><a href='#profile.comp'>profile.comp</a>(<span class='arg'>a</span>, <span class='arg'>b</span>)</td><td>This is an internal function.</td></tr>
+<tr><td><a href='#profile.hooker'>profile.hooker</a>(<span class='arg'>event</span>, <span class='arg'>line</span>, <span class='arg'>info</span>)</td><td>This is an internal function.</td></tr>
+<tr><td><a href='#profile.query'>profile.query</a>(<span class='arg'>limit</span>)</td><td>Generates a report of functions that have been called since the profile was started.  Returns the report as a numeric table of rows containing the rank, function label, number of calls, total execution time and source code line number.</td></tr>
+<tr><td><a href='#profile.report'>profile.report</a>(<span class='arg'>limit</span>)</td><td>Generates a text report of functions that have been called since the profile was started.  Returns the report as a string that can be printed to the console.</td></tr>
+<tr><td><a href='#profile.reset'>profile.reset</a>()</td><td>Resets all collected data.</td></tr>
+<tr><td><a href='#profile.setclock'>profile.setclock</a>(<span class='arg'>func</span>)</td><td>Sets a clock function to be used by the profiler.</td></tr>
+<tr><td><a href='#profile.start'>profile.start</a>()</td><td>Starts collecting data.</td></tr>
+<tr><td><a href='#profile.stop'>profile.stop</a>()</td><td>Stops collecting data.</td></tr>
+</table>
+<h3 id='profile.comp'>profile.comp(<span class='arg'>a</span>, <span class='arg'>b</span>)</h3>
+This is an internal function.
+<table>
+<tr><td><a class='type'>function</a></td><td><b class='arg'>a</b><br>
+First function</td></tr>
+<tr><td><a class='type'>function</a></td><td><b class='arg'>b</b><br>
+Second function</td></tr>
+<tr><th></td><th>Returns</th></tr>
+<tr><td><a class='type'>boolean</a></td>
+<td>True if "a" should rank higher than "b"</td></tr>
+</table>
+<h3 id='profile.hooker'>profile.hooker(<span class='arg'>event</span>, <span class='arg'>line</span>, <span class='arg'>info</span>)</h3>
+This is an internal function.
+<table>
+<tr><td><a class='type'>string</a></td><td><b class='arg'>event</b><br>
+Event type</td></tr>
+<tr><td><a class='type'>number</a></td><td><b class='arg'>line</b><br>
+Line number</td></tr>
+<tr><td><a class='type'>table</a></td><td><b class='arg'>info</b> (optional)<br>
+Debug info table</td></tr>
+</table>
+<h3 id='profile.query'>profile.query(<span class='arg'>limit</span>)</h3>
+Generates a report of functions that have been called since the profile was started.  Returns the report as a numeric table of rows containing the rank, function label, number of calls, total execution time and source code line number.
+<table>
+<tr><td><a class='type'>number</a></td><td><b class='arg'>limit</b> (optional)<br>
+Maximum number of rows</td></tr>
+<tr><th></td><th>Returns</th></tr>
+<tr><td><a class='type'>table</a></td>
+<td>Table of rows</td></tr>
+</table>
+<h3 id='profile.report'>profile.report(<span class='arg'>limit</span>)</h3>
+Generates a text report of functions that have been called since the profile was started.  Returns the report as a string that can be printed to the console.
+<table>
+<tr><td><a class='type'>number</a></td><td><b class='arg'>limit</b> (optional)<br>
+Maximum number of rows</td></tr>
+<tr><th></td><th>Returns</th></tr>
+<tr><td><a class='type'>string</a></td>
+<td>Text-based profiling report</td></tr>
+</table>
+<h3 id='profile.reset'>profile.reset()</h3>
+Resets all collected data.
+<h3 id='profile.setclock'>profile.setclock(<span class='arg'>func</span>)</h3>
+Sets a clock function to be used by the profiler.
+<table>
+<tr><td><a class='type'>function</a></td><td><b class='arg'>func</b><br>
+Clock function that returns a number</td></tr>
+</table>
+<h3 id='profile.start'>profile.start()</h3>
+Starts collecting data.
+<h3 id='profile.stop'>profile.stop()</h3>
+Stops collecting data.
+<br><br><br></div>
+<div class='menu'>
+<h3><a href='#profile'>profile</a></h3>
+<ul>
+<li><a href='#profile.comp'>comp</a><br>
+<li><a href='#profile.hooker'>hooker</a><br>
+<li><a href='#profile.query'>query</a><br>
+<li><a href='#profile.report'>report</a><br>
+<li><a href='#profile.reset'>reset</a><br>
+<li><a href='#profile.setclock'>setclock</a><br>
+<li><a href='#profile.start'>start</a><br>
+<li><a href='#profile.stop'>stop</a><br>
+</ul>
+</div>
+</div>
+</html>

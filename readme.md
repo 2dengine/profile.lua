@@ -30,7 +30,7 @@ For optimal accuracy, this function should be called from code that is NOT being
 Resets all collected data.
 
 ## profile.setclock(func)
-Defines a custom clock function that must return a number that records time.
+Defines a custom clock function that must return a number tracking time.
 The profiler uses os.clock() by default which records the time in seconds.
 
 # Examples
@@ -88,7 +88,7 @@ The default report is in plain text:
 
 The "Function" column shows the function name. Closures that do not have a defined name will be replaced with the source code file and line number.
 The "Calls" column tracks the total number of function calls.
-The "Time" column records the total elapsed time. This value is usually in seconds, see profile.setclock(func)
+The "Time" column records the total elapsed time. This value is usually in seconds.
 The "Code" column shows the source file and the line number. Chunks executed using loadstring are labeled as "string".
 It's easy to generate any type of report that you want, for example CSV:
 
