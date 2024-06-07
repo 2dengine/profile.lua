@@ -4,6 +4,7 @@ To use the profiler, you need to require the profile.lua file and specify when t
 Once you are done profiling, a report is generated, describing:
 * which functions were called most frequently and
 * how much time was spent executing each function
+
 This project is developed and maintained by 2dengine LLC.
 Please support our open source work, by visiting: https://2dengine.com
 
