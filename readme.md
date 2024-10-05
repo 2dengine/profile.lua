@@ -82,3 +82,5 @@ end
 0x25a0
 grump
 Roland Yonaba
+
+Please support our work so we can release more free software in the future.
