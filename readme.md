@@ -5,39 +5,15 @@ Once you are done profiling, a report is generated, describing:
 * which functions were called most frequently and
 * how much time was spent executing each function
 
-This project is developed and maintained by 2dengine LLC.
-Please support our open source work, by visiting: https://2dengine.com
+The source code available on [GitHub](https://github.com/2dengine/profile.lua) and the official documentation is from [2dengine.com](https://2dengine.com/doc/profile.html)
 
 # Compatibility
 LuaJIT optimizations need to be disabled when using the profiler and co-routines are not supported.
 The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
 Use at your own discretion!
 
-# Documentation
-The full documentation is available at:
-https://2dengine.com/doc/profile.html
-
-# API
-## profile.report(rows)
-Generates a report and returns it as a string.
-"rows" limits the number of rows in the report.
-
-## profile.start()
-Starts collecting data.
-
-## profile.stop()
-Stops collecting data.
-For optimal accuracy, this function should be called from code that is NOT being profiled.
-
-## profile.reset()
-Resets all collected data.
-
-## profile.setclock(func)
-Defines a custom clock function that must return a number tracking time.
-The profiler uses os.clock() by default which records the time in seconds.
-
 # Examples
-## Basic
+## Pure Lua
 ~~~~
 local profile = require("profile")
 profile.start()
@@ -47,7 +23,7 @@ profile.stop()
 print(profile.report(10))
 ~~~~
 
-## Love2D
+## LÖVE
 ~~~~
 -- setup
 function love.load()

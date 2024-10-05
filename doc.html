@@ -1,8 +1,10 @@
 <html>
 <head>
+<meta charset="UTF-8">
 <style>
 body { background-color:#fff; padding: 0; margin: 0; }
-table { border:1px solid #ccc; width:100%; padding:1em; background-color:#eee; }
+table, pre { border:1px solid #ccc; width:100%; padding:1em; background-color:#eee; }
+pre { overflow-x: auto }
 th { border-bottom:1px dashed #ccc; text-align:left; padding-top:0.5em; }
 td { vertical-align: top; }
 tr td:first-of-type { width:4em; white-space:nowrap; }
@@ -10,37 +12,138 @@ tr td:first-of-type { width:4em; white-space:nowrap; }
 .type { color:#00f; }
 .meta, th { color:#aaa; }
 .page { clear: both; }
-.page, .menu, .cont { box-sizing:border-box; display:block; margin: 0; }
+.page, .menu, .cont, pre { box-sizing:border-box; display:block; margin: 0; }
 .menu, .cont { overflow-x:hidden; overflow-y:auto; height: 100%; max-height: 100%; padding: 1em; }
-.menu { float:left; width:25%; background-color:#eee; border-right:1px solid #ccc; }
+.menu { float:left; width:25%; background-color:#eee; border-right:1px solid #ccc; padding-top:2em; }
+.menu h2 { white-space: nowrap; };
+footer { font-size: 0.9em }
+a:link { text-decoration: none; }
 .cont { float:right; width:75%; }
 .see { font-size: 0.9em; padding: 0.5em; }
-h1,h2,h3 { padding: 1em 0 0 0; margin: 0; }
-ul { padding: 0.5 1em; margin: 0; }
+h1,h2,h3,h4 { padding: 1em 0 0 0; margin: 0; }
+ul { padding: 0.5em 1em; margin: 0; margin-left: 1.5em; }
 hr { border-top: 1px solid #ccc; }
+section { display: none };
+section:first-child, section:target { display: block; }
 </style>
+<script>
+function nav(event) {
+  const hash = window.location.hash.match(/#(.+)/);
+  let sec = null;
+  if (hash && hash[1]) {
+    const parts = hash[1].split(/[\.\:]/);
+    if (parts && parts[0])
+      sec = document.getElementById(parts[0]);
+  }
+  const sections = document.getElementsByTagName('section');
+  for (let s of sections)
+    s.style['display'] = 'none';
+  if (sec)
+    sec.style['display'] = 'block';
+  else
+    sections[0].style['display'] = 'block';
+
+  if (hash && hash[1]) {
+    const targ = document.getElementById(hash[1]);
+    targ.scrollIntoView();//{ behavior: 'smooth', block: 'start' });
+    //console.log(parts[1], parts[3]);
+  }
+}
+
+window.addEventListener("hashchange", nav);
+window.addEventListener("load", nav);
+</script>
 </head>
 <body>
 <div class='page'>
 <div class='cont'>
-<h1>profile.lua</h1>
-Simple profiler written in Lua.<br>Developed and maintained by <a href="https://2dengine.com">2dengine.com</a>
-<br>Last updated on January 04, 2024<br><br>
-<h2 id='profile'>profile</h2>
-Simple profiler written in Lua.<br>
+<section><p><h2> Profile.lua</h2>
+profile.lua is a small module used for finding bottlenecks in your Lua code.
+To use the profiler, you need to require the profile.lua file and specify when to start or stop collecting data.
+Once you are done profiling, a report is generated, describing:
+<li> which functions were called most frequently and<br>
+<li> how much time was spent executing each function<br><br>
+The source code available on <a href="https://github.com/2dengine/profile.lua">GitHub</a> and the official documentation is from <a href="https://2dengine.com/doc/profile.html">2dengine.com</a><br>
+<h2> Compatibility</h2>
+LuaJIT optimizations need to be disabled when using the profiler and co-routines are not supported.
+The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
+Use at your own discretion!<br>
+<h2> Examples</h2>
+<h3> Pure Lua</h3>
+<pre>local profile = require("profile")
+profile.start()
+-- execute code that will be profiled
+profile.stop()
+-- report for the top 10 functions, sorted by execution time
+print(profile.report(10))
+</pre><br>
+<h3> LÖVE</h3>
+<pre>-- setup
+function love.load()
+  love.profiler = require('profile') 
+  love.profiler.start()
+end<br>
+-- generates a report every 100 frames
+love.frame = 0
+function love.update(dt)
+  love.frame = love.frame + 1
+  if love.frame%100 == 0 then
+    love.report = love.profiler.report(20)
+    love.profiler.reset()
+  end
+end<br>
+-- prints the report
+function love.draw()
+  love.graphics.print(love.report or "Please wait...")
+end
+</pre><br>
+<h2> Reports</h2>
+The default report is in plain text:
+<pre> +-----+----------------------------------+----------+--------------------------+----------------------------------+
+ | #   | Function                         | Calls    | Time                     | Code                             |
+ +-----+----------------------------------+----------+--------------------------+----------------------------------+
+ | 1   | update                           | 1        | 9.0023296745494          | main.lua:23                      |
+ | 2   | f                                | 1        | 9.0022503120126          | main.lua:12                      |
+ | 3   | g                                | 8        | 8.0016986143455          | main.lua:5                       |
+ | 4   | [string "boot.lua"]:185          | 3        | 2.4960798327811e-005     | [string "boot.lua"]:185          |
+ | 5   | [string "boot.lua"]:134          | 2        | 1.7920567188412e-005     | [string "boot.lua"]:134          |
+ | 6   | [string "boot.lua"]:188          | 1        | 1.6000514733605e-005     | [string "boot.lua"]:188          |
+ | 7   | [string "boot.lua"]:182          | 1        | 1.2160395272076e-005     | [string "boot.lua"]:182          |
+ | 8   | [string "boot.lua"]:131          | 1        | 1.0240328265354e-005     | [string "boot.lua"]:131          |
+ | 9   | load                             | 0        | 0                        | main.lua:17                      |
+ +-----+----------------------------------+----------+--------------------------+----------------------------------+
+</pre><br>
+The "Function" column shows the function name. Closures that do not have a defined name will be replaced with the source code file and line number.
+The "Calls" column tracks the total number of function calls.
+The "Time" column records the total elapsed time. This value is usually in seconds.
+The "Code" column shows the source file and the line number. Chunks executed using loadstring are labeled as "string".
+It's easy to generate any type of report that you want, for example CSV:<br>
+<pre>print('Position,Function name,Number of calls,Time,Source,')
+for t in ipairs(profiler.query(10)) do
+  print(table.concat(t, ",")..",")
+end
+</pre><br>
+<h2> Credits</h2>
+0x25a0
+grump
+Roland Yonaba</p></section><section id='profile'>
+<h3><a href="#">Profile.lua</a> &gt; profile</h3>
+<h2>profile</h2>
+The "profile" module controls when to start or stop collecting data and can be used to generate reports.<br>
 <table>
-<tr><td><a href='#profile.comp'>profile.comp</a>(<span class='arg'>a</span>, <span class='arg'>b</span>)</td><td>This is an internal function.</td></tr>
-<tr><td><a href='#profile.hooker'>profile.hooker</a>(<span class='arg'>event</span>, <span class='arg'>line</span>, <span class='arg'>info</span>)</td><td>This is an internal function.</td></tr>
-<tr><td><a href='#profile.query'>profile.query</a>(<span class='arg'>limit</span>)</td><td>Generates a report of functions that have been called since the profile was started.  Returns the report as a numeric table of rows containing the rank, function label, number of calls, total execution time and source code line number.</td></tr>
-<tr><td><a href='#profile.report'>profile.report</a>(<span class='arg'>limit</span>)</td><td>Generates a text report of functions that have been called since the profile was started.  Returns the report as a string that can be printed to the console.</td></tr>
-<tr><td><a href='#profile.reset'>profile.reset</a>()</td><td>Resets all collected data.</td></tr>
-<tr><td><a href='#profile.setclock'>profile.setclock</a>(<span class='arg'>func</span>)</td><td>Sets a clock function to be used by the profiler.</td></tr>
-<tr><td><a href='#profile.start'>profile.start</a>()</td><td>Starts collecting data.</td></tr>
-<tr><td><a href='#profile.stop'>profile.stop</a>()</td><td>Stops collecting data.</td></tr>
+<tr><td><a href='#profile.comp'>profile.comp</a>(<span class='arg'>a</span>, <span class='arg'>b</span>)</td></tr>
+<tr><td><a href='#profile.hooker'>profile.hooker</a>(<span class='arg'>event</span>, <span class='arg'>line</span>, <span class='arg'>info</span>)</td></tr>
+<tr><td><a href='#profile.query'>profile.query</a>(<span class='arg'>limit</span>)</td></tr>
+<tr><td><a href='#profile.report'>profile.report</a>(<span class='arg'>limit</span>)</td></tr>
+<tr><td><a href='#profile.reset'>profile.reset</a>()</td></tr>
+<tr><td><a href='#profile.setclock'>profile.setclock</a>(<span class='arg'>func</span>)</td></tr>
+<tr><td><a href='#profile.start'>profile.start</a>()</td></tr>
+<tr><td><a href='#profile.stop'>profile.stop</a>()</td></tr>
 </table>
 <h3 id='profile.comp'>profile.comp(<span class='arg'>a</span>, <span class='arg'>b</span>)</h3>
 This is an internal function.
 <table>
+<tr><th></td><th>Arguments</th></tr>
 <tr><td><a class='type'>function</a></td><td><b class='arg'>a</b><br>
 First function</td></tr>
 <tr><td><a class='type'>function</a></td><td><b class='arg'>b</b><br>
@@ -52,6 +155,7 @@ Second function</td></tr>
 <h3 id='profile.hooker'>profile.hooker(<span class='arg'>event</span>, <span class='arg'>line</span>, <span class='arg'>info</span>)</h3>
 This is an internal function.
 <table>
+<tr><th></td><th>Arguments</th></tr>
 <tr><td><a class='type'>string</a></td><td><b class='arg'>event</b><br>
 Event type</td></tr>
 <tr><td><a class='type'>number</a></td><td><b class='arg'>line</b><br>
@@ -62,6 +166,7 @@ Debug info table</td></tr>
 <h3 id='profile.query'>profile.query(<span class='arg'>limit</span>)</h3>
 Generates a report of functions that have been called since the profile was started.  Returns the report as a numeric table of rows containing the rank, function label, number of calls, total execution time and source code line number.
 <table>
+<tr><th></td><th>Arguments</th></tr>
 <tr><td><a class='type'>number</a></td><td><b class='arg'>limit</b> (optional)<br>
 Maximum number of rows</td></tr>
 <tr><th></td><th>Returns</th></tr>
@@ -71,6 +176,7 @@ Maximum number of rows</td></tr>
 <h3 id='profile.report'>profile.report(<span class='arg'>limit</span>)</h3>
 Generates a text report of functions that have been called since the profile was started.  Returns the report as a string that can be printed to the console.
 <table>
+<tr><th></td><th>Arguments</th></tr>
 <tr><td><a class='type'>number</a></td><td><b class='arg'>limit</b> (optional)<br>
 Maximum number of rows</td></tr>
 <tr><th></td><th>Returns</th></tr>
@@ -82,6 +188,7 @@ Resets all collected data.
 <h3 id='profile.setclock'>profile.setclock(<span class='arg'>func</span>)</h3>
 Sets a clock function to be used by the profiler.
 <table>
+<tr><th></td><th>Arguments</th></tr>
 <tr><td><a class='type'>function</a></td><td><b class='arg'>func</b><br>
 Clock function that returns a number</td></tr>
 </table>
@@ -89,19 +196,17 @@ Clock function that returns a number</td></tr>
 Starts collecting data.
 <h3 id='profile.stop'>profile.stop()</h3>
 Stops collecting data.
-<br><br><br></div>
-<div class='menu'>
-<h3><a href='#profile'>profile</a></h3>
-<ul>
-<li><a href='#profile.comp'>comp</a><br>
-<li><a href='#profile.hooker'>hooker</a><br>
-<li><a href='#profile.query'>query</a><br>
-<li><a href='#profile.report'>report</a><br>
-<li><a href='#profile.reset'>reset</a><br>
-<li><a href='#profile.setclock'>setclock</a><br>
-<li><a href='#profile.start'>start</a><br>
-<li><a href='#profile.stop'>stop</a><br>
-</ul>
+</section>
+<footer><br>This document was last updated on October 05, 2024 
+by <a href="https://2dengine.com">2dengine LLC</a>.
+© All rights reserved
+<br><br></footer>
 </div>
+<nav class="menu">
+<a href="https://2dengine.com/">
+<svg style="max-width:20em;" version="1.1" id="svg1" viewBox="0 0 1428 273.33334" sodipodi:docname="logo.svg" inkscape:version="1.3 (0e150ed, 2023-07-21)" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns="http://www.w3.org/2000/svg" xmlns:svg="http://www.w3.org/2000/svg"> <defs  id="defs1" /> <sodipodi:namedview  id="namedview1"  pagecolor="#ffffff"  bordercolor="#000000"  borderopacity="0.25"  inkscape:showpageshadow="2"  inkscape:pageopacity="0.0"  inkscape:pagecheckerboard="0"  inkscape:deskcolor="#d1d1d1"  inkscape:zoom="0.93347339"  inkscape:cx="152.12003"  inkscape:cy="136.58665"  inkscape:window-width="1635"  inkscape:window-height="991"  inkscape:window-x="26"  inkscape:window-y="23"  inkscape:window-maximized="0"  inkscape:current-layer="g1" /> <g  inkscape:groupmode="layer"  inkscape:label="Image"  id="g1">  <path  style="fill:#000000"  d="m 841.56585,245.51516 c -41.18372,-9.15579 -69.45741,-37.06971 -77.39821,-76.41333 -3.34971,-16.59655 -2.16061,-43.28132 2.64634,-59.38702 9.62025,-32.232661 32.40524,-59.814261 60.24921,-72.932621 17.63805,-8.30997 30.88625,-10.92924 55.83599,-11.03917 18.81915,-0.0829 22.50635,0.27432 31.28635,3.03134 19.1964,6.02788 35.92386,16.45609 51.03906,31.81865 l 7.6589,7.78413 -12.1463,11.20157 -12.1463,11.20156 -4.71036,-5.67073 c -10.1711,-12.24459 -30.75,-24.93613 -45.3803,-27.98708 -9.9847,-2.08218 -30.07576,-1.79357 -40.13023,0.57647 -23.16317,5.46004 -44.5903,24.57735 -55.72372,49.716781 -9.85613,22.2553 -9.37214,54.05558 1.12239,73.74534 7.5254,14.11909 22.58654,26.77448 39.60275,33.2769 9.50231,3.63113 30.11659,4.93761 40.37058,2.55859 16.70013,-3.8746 33.47763,-14.71327 41.05603,-26.5233 3.7586,-5.85718 9.4345,-20.46218 9.4345,-24.27635 0,-0.691 -11.7823,-1.21454 -27.3333,-1.21454 -15.0334,0 -27.33338,-0.5046 -27.33338,-1.12133 0,-1.97762 2.76366,-23.43718 3.41862,-26.54534 l 0.63218,-3 h 45.36358 45.36346 l -0.8521,10.33334 c -1.6625,20.1622 -5.5891,36.22169 -12.1436,49.66666 -5.1486,10.56091 -8.082,14.57597 -17.64526,24.15156 -9.3146,9.3265 -13.6001,12.50748 -22.8035,16.92621 -18.3425,8.8065 -28.4379,11.13864 -50.66672,11.7045 -14.15056,0.36023 -21.83536,-0.0641 -28.66666,-1.58279 z M 38.954961,217.98235 c 74.930999,-75.88082 93.509819,-95.39589 97.830569,-102.76061 11.16012,-19.022401 10.85585,-40.982191 -0.71822,-51.835331 -13.1603,-12.34057 -39.905928,-11.0865 -52.759408,2.47383 -4.19842,4.4293 -9.83627,16.30817 -11.13222,23.45544 l -0.90661,5 h -16.51828 c -9.08505,0 -16.518281,-0.32529 -16.518281,-0.72288 0,-4.65511 5.08721,-23.10979 8.143411,-29.54154 11.29827,-23.77714 32.80931,-35.24267 66.523258,-35.45734 13.20046,-0.0841 16.82957,0.3972 26.08989,3.45983 25.90259,8.56666 39.62664,27.32262 39.70434,54.26193 0.0554,19.214071 -6.74579,36.366911 -21.67568,54.666671 -10.27476,12.5939 -39.46459,42.75668 -58.520518,60.47111 l -12.40196,11.52889 h 55.092798 55.09281 l 11.75903,-88.33334 c 6.46747,-48.583331 12.0886,-89.750901 12.49139,-91.483491 l 0.73236,-3.15015 40.81777,0.70318 c 51.82797,0.89286 62.2055,2.70682 80.1511,14.01016 26.32605,16.58191 41.53134,46.5416 41.74576,82.253641 0.26938,44.86314 -20.53817,84.15032 -54.04536,102.0442 -24.32846,12.99215 -27.1863,13.19752 -184.35355,13.24755 l -130.653149,0.0416 z m 250.145509,-8.32337 c 14.92401,-2.55682 26.74414,-8.67087 37.14363,-19.21282 14.96947,-15.17454 22.61566,-34.82804 22.61566,-58.13048 0,-35.599871 -17.67266,-60.598391 -48.08467,-68.017241 -4.69842,-1.14616 -17.92509,-2.44842 -29.39262,-2.89393 l -20.85004,-0.81001 -0.82273,5.19392 c -0.45251,2.85666 -4.71019,35.193931 -9.46152,71.860591 -4.75133,36.66667 -8.92771,68.28735 -9.28086,70.26819 -0.62759,3.52027 -0.47019,3.61391 6.97822,4.15129 11.79063,0.85065 39.83623,-0.47036 51.15493,-2.40951 z m 101.13204,30.58856 c 0,-2.59594 26.51632,-202.845011 27.40123,-206.931861 l 0.64958,-3 h 59.45247 59.45248 l -0.70715,3 c -0.38893,1.65 -1.12494,8.25 -1.63558,14.66667 l -0.92843,11.66666 h -43.15023 -43.15023 l -0.64939,3 c -0.35717,1.65 -1.60356,11.4 -2.76977,21.66667 -1.1662,10.26667 -2.46209,20.916671 -2.87975,23.666671 l -0.75938,5 h 42.83708 c 33.38614,0 42.83485,0.36771 42.827,1.66666 -0.01,1.57384 -1.78539,13.82702 -3.37908,23.31494 l -0.72478,4.31494 -42.94303,0.35173 -42.94304,0.35173 -4.25579,32.66667 c -2.34069,17.96666 -4.29069,33.41666 -4.33334,34.33333 -0.0605,1.30023 9.30334,1.66667 42.58913,1.66667 39.74987,0 42.66598,0.15951 42.6566,2.33333 -0.009,2.13527 -1.57448,13.24123 -3.38253,24 l -0.72823,4.33334 h -59.27292 c -52.66618,0 -59.27292,-0.23053 -59.27292,-2.06815 z m 149.33334,-0.13177 c 0,-2.85705 25.19819,-202.697161 26.07578,-206.800091 0.51403,-2.40317 1.55135,-3 5.21419,-3 4.36445,0 7.07808,2.86025 59.64126,62.86383 52.8207,60.297551 65.06147,74.570771 71.19726,83.018761 l 2.79515,3.84849 0.75233,-13.86554 c 0.41378,-7.62605 4.55596,-41.31535 9.20484,-74.865121 l 8.45252,-60.99959 15.66667,-4.2e-4 c 14.82444,-3.9e-4 15.66666,0.14424 15.66666,2.69023 0,2.55068 -25.81337,195.737051 -27.39885,205.052071 -0.6915,4.06266 -1.09772,4.37718 -5.16627,4 -4.00585,-0.37137 -9.70482,-6.47436 -61.39056,-65.74271 -31.33613,-35.93333 -60.06543,-69.48197 -63.84288,-74.55253 l -6.8681,-9.219191 -1.15595,10.552531 c -0.63577,5.80389 -4.86637,39.35253 -9.40133,74.55253 l -8.24538,64 -15.59867,0.37565 c -13.98624,0.33681 -15.59867,0.13949 -15.59867,-1.9089 z m 441.29724,0.53325 c -0.02,-0.91667 6.128,-48.61667 13.6618,-106.00001 L 1008.2227,30.315679 h 17.0049 c 11.064,0 17.0049,0.4926 17.0049,1.40998 0,1.74192 -26.3503,200.250751 -27.3788,206.256691 l -0.742,4.33334 h -16.60631 c -12.3769,0 -16.6154,-0.42448 -16.6423,-1.66667 z m 63.38271,-2.58585 c 1.2951,-8.27164 28.6534,-205.611791 28.6534,-206.681841 0,-0.58611 7.2,-1.06565 16,-1.06565 8.8,0 16,0.22261 16,0.49468 0,0.27207 -3.6117,27.12207 -8.0261,59.66667 -7.0379,51.886911 -11.6803,80.362391 -14.2934,87.671951 -0.426,1.19169 3.6734,-2.0333 9.1098,-7.16663 5.4364,-5.13333 27.8825,-24.95268 49.8803,-44.04299 21.9979,-19.09031 55.8109,-48.490311 75.1401,-65.333341 31.2128,-27.19801 35.7162,-30.66913 40.2583,-31.03 4.6938,-0.37293 5.0702,-0.15372 4.5784,2.66666 -0.2946,1.69015 -2.346,15.673 -4.5585,31.073 -2.2126,15.4 -6.4427,44.200001 -9.4003,64.000001 -6.1348,41.07063 -12.9318,86.99938 -15.1935,102.66667 l -1.5399,10.66667 -15.6443,0.37565 c -8.6043,0.2066 -15.6442,-0.1026 -15.6442,-0.68712 0,-1.92707 17.2891,-120.74975 19.4493,-133.66921 1.1631,-6.95604 2.3982,-13.106041 2.7447,-13.666671 1.6532,-2.6748 -1.3529,-0.27219 -9.7181,7.767241 -5.0284,4.83261 -15.4426,14.2747 -23.1426,20.98243 -7.7,6.70772 -14.6556,12.80376 -15.4568,13.54676 -0.8013,0.743 -28.2952,24.75092 -61.0977,53.35092 -50.517,44.04501 -60.3407,52.06336 -64.2154,52.41415 -4.4891,0.40642 -4.5617,0.33167 -3.8835,-4 z m 215.3201,1.52165 c 0,-1.39009 2.048,-16.28918 3.4252,-24.91741 l 0.6887,-4.31493 42.8997,-0.35173 42.8998,-0.35173 4.721,-33.76671 c 2.5966,-18.57168 4.4661,-34.02168 4.1544,-34.33333 -0.3116,-0.31165 -19.678,-0.56663 -43.0365,-0.56663 h -42.4698 l 0.6115,-3 c 0.3363,-1.65 0.9687,-6.3 1.4052,-10.33334 0.4366,-4.03333 1.1396,-9.28333 1.5623,-11.66666 l 0.7686,-4.33334 h 42.4929 42.4928 l 0.6285,-3 c 0.3457,-1.65 1.8739,-11.400001 3.3961,-21.666661 1.5222,-10.26667 3.1036,-20.91667 3.5141,-23.66667 l 0.7465,-5 h -43.2582 -43.2582 l 1.7595,-10.33333 c 0.9677,-5.68334 2.1083,-12.28334 2.5347,-14.66667 l 0.7753,-4.33333 h 59.3789 59.3788 l -0.7012,3.66666 c -0.6276,3.28173 -1.4899,9.04252 -2.844,19 -0.2493,1.83334 -0.7962,5.73334 -1.2154,8.66667 -0.4191,2.93333 -1.1497,8.33333 -1.6235,12 -0.4739,3.66667 -5.7526,42.966671 -11.7306,87.333341 l -10.869,80.66667 -59.6141,0.34706 c -41.6266,0.24234 -59.614,-0.0829 -59.614,-1.07793 z"  id="path1" /> </g> </svg> </a><p>Simple profiler written in Lua</p><h2><a href="#"><svg style="max-height:1.5em; vertical-align:middle; padding:.5em" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><!--! Font Awesome Free 6.4.0 by @fontawesome - https://fontawesome.com License - https://fontawesome.com/license/free (Icons: CC BY 4.0, Fonts: SIL OFL 1.1, Code: MIT License) Copyright 2023 Fonticons, Inc. --><path d="M392.8 1.2c-17-4.9-34.7 5-39.6 22l-128 448c-4.9 17 5 34.7 22 39.6s34.7-5 39.6-22l128-448c4.9-17-5-34.7-22-39.6zm80.6 120.1c-12.5 12.5-12.5 32.8 0 45.3L562.7 256l-89.4 89.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l112-112c12.5-12.5 12.5-32.8 0-45.3l-112-112c-12.5-12.5-32.8-12.5-45.3 0zm-306.7 0c-12.5-12.5-32.8-12.5-45.3 0l-112 112c-12.5 12.5-12.5 32.8 0 45.3l112 112c12.5 12.5 32.8 12.5 45.3 0s12.5-32.8 0-45.3L77.3 256l89.4-89.4c12.5-12.5 12.5-32.8 0-45.3z"/></svg>Profile.lua</a></h2><ul>
+<li> <a href='#profile'>profile</a>
+</ul>
+</nav>
 </div>
 </html>

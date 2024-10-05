@@ -1,6 +1,6 @@
 local clock = os.clock
 
---- Simple profiler written in Lua.
+--- The "profile" module controls when to start or stop collecting data and can be used to generate reports.
 -- @module profile
 -- @alias profile
 local profile = {}
