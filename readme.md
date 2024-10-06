@@ -5,7 +5,7 @@ Once you are done profiling, a report is generated, describing:
 * which functions were called most frequently and
 * how much time was spent executing each function
 
-The source code available on [GitHub](https://github.com/2dengine/profile.lua) and the official documentation is on [2dengine.com](https://2dengine.com/doc/profile.html)
+The source code is available on [GitHub](https://github.com/2dengine/profile.lua) and the official documentation is on [2dengine.com](https://2dengine.com/doc/profile.html)
 
 # Compatibility
 LuaJIT optimizations need to be disabled when using the profiler and co-routines are not supported.
