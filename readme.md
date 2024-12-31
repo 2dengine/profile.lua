@@ -1,4 +1,6 @@
 # Profile.lua
+
+## Introduction
 profile.lua is a small module used for finding bottlenecks in your Lua code.
 To use the profiler, you need to require the profile.lua file and specify when to start or stop collecting data.
 Once you are done profiling, a report is generated, describing:
@@ -7,13 +9,13 @@ Once you are done profiling, a report is generated, describing:
 
 The source code is available on [GitHub](https://github.com/2dengine/profile.lua) and the official documentation is hosted on [2dengine.com](https://2dengine.com/doc/profile.html)
 
-# Compatibility
+## Compatibility
 LuaJIT optimizations need to be disabled when using the profiler and co-routines are not supported.
 The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
 Use at your own discretion!
 
-# Examples
-## Pure Lua
+## Examples
+### Pure Lua
 ~~~~
 local profile = require("profile")
 profile.start()
@@ -23,7 +25,7 @@ profile.stop()
 print(profile.report(10))
 ~~~~
 
-## LÖVE
+### LÖVE
 ~~~~
 -- setup
 function love.load()
@@ -47,7 +49,7 @@ function love.draw()
 end
 ~~~~
 
-# Reports
+## Reports
 The default report is in plain text:
 ~~~~
  +-----+----------------------------------+----------+--------------------------+----------------------------------+
@@ -78,7 +80,7 @@ for t in ipairs(profiler.query(10)) do
 end
 ~~~~
 
-# Credits
+## Credits
 0x25a0
 grump
 Roland Yonaba
