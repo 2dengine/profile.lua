@@ -21,6 +21,17 @@ Use at your own discretion!
 local profile = require("profile")
 profile.start()
 -- execute code that will be profiled
+function isprime(n)
+  for i = 2, n^.5 do
+    if n%i == 0 then
+      return false
+    end
+  end
+  return true
+end
+for i = 1, 100000 do
+  isprime(i)
+end
 profile.stop()
 -- report for the top 10 functions, sorted by execution time
 print(profile.report(10))
