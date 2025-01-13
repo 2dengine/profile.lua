@@ -12,6 +12,7 @@ The source code is available on [GitHub](https://github.com/2dengine/profile.lua
 ## Compatibility
 LuaJIT optimizations need to be disabled when using the profiler and co-routines are not supported.
 The profiler has been tested with both LuaJIT 2.0.5 and Lua 5.3 although there are no guarantees regarding its accuracy.
+The Lua debug module adds a tiny bit of overhead during each function call so recursion may produce worse results compared to using loops.
 Use at your own discretion!
 
 ## Examples
@@ -69,9 +70,9 @@ The default report is in plain text:
 
 The "Function" column shows the function name. Closures that do not have a defined name will be replaced with the source code file and line number.
 The "Calls" column tracks the total number of function calls.
-The "Time" column records the total elapsed time. This value is usually in seconds.
+The "Time" column records the total execution time. This value is usually in seconds.
 The "Code" column shows the source file and the line number. Chunks executed using loadstring are labeled as "string".
-It's easy to generate any type of report that you want, for example CSV:
+It's easy to generate reports in a custom format, for example CSV:
 
 ~~~~
 print('Position,Function name,Number of calls,Time,Source,')
