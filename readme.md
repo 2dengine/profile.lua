@@ -22,7 +22,7 @@ local profile = require("profile")
 profile.start()
 -- execute code that will be profiled
 function isprime(n)
-  for i = 2, n^.5 do
+  for i = 2, math.sqrt(n) do
     if n%i == 0 then
       return false
     end
