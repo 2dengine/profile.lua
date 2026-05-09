@@ -17,7 +17,7 @@ Use at your own discretion!
 
 ## Examples
 ### Pure Lua
-~~~~
+```Lua
 local profile = require("profile")
 profile.start()
 -- execute code that will be profiled
@@ -35,10 +35,10 @@ end
 profile.stop()
 -- report for the top 10 functions, sorted by execution time
 print(profile.report(10))
-~~~~
+```
 
 ### LÖVE
-~~~~
+```Lua
 -- setup
 function love.load()
   love.profiler = require('profile') 
@@ -59,7 +59,7 @@ end
 function love.draw()
   love.graphics.print(love.report or "Please wait...")
 end
-~~~~
+```
 
 ## Reports
 The default report is in plain text:
@@ -85,12 +85,12 @@ The "Time" column records the total execution time. This value is usually in sec
 The "Code" column shows the source file and the line number. Chunks executed using loadstring are labeled as "string".
 It's easy to generate reports in a custom format, for example CSV:
 
-~~~~
+```Lua
 print('Position,Function name,Number of calls,Time,Source,')
 for t in ipairs(profiler.query(10)) do
   print(table.concat(t, ",")..",")
 end
-~~~~
+```
 
 ## Credits
 0x25a0

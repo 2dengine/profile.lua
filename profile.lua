@@ -1,9 +1,10 @@
---[[
-This file is a part of the "profile.lua" library.
-
-MIT License
+--[[!
+profile.lua
 
 Copyright (c) 2015 2dengine LLC
+https://2dengine.com/
+
+MIT License
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
