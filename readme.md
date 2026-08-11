@@ -93,8 +93,10 @@ end
 ```
 
 ## Credits
-0x25a0
-grump
-Roland Yonaba
+[0x25a0](https://github.com/25A0)
 
-Please support our work so we can release more free software in the future.
+[grump](https://github.com/megagrump)
+
+[Roland Yonaba](https://github.com/Yonaba)
+
+Please support [2dengine](https://2dengine.com) so we can release more free software in the future.
