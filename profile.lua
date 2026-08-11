@@ -161,10 +161,13 @@ function profile.query(limit)
       if _tcalled[f] then
         dt = clock() - _tcalled[f]
       end
-      t[#t + 1] = { i, _labeled[f] or '?', _ncalls[f], _telapsed[f] + dt, _defined[f] }
+      t[#t + 1] = { 0, _labeled[f] or '?', _ncalls[f], _telapsed[f] + dt, _defined[f] }
     end
   end
   table.sort(t, profile.comp)
+  for i = 1, #t do
+    t[i] = i
+  end
   if limit then
     while #t > limit do
       table.remove(t)
