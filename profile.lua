@@ -165,13 +165,13 @@ function profile.query(limit)
     end
   end
   table.sort(t, profile.comp)
-  for i = 1, #t do
-    t[i] = i
-  end
   if limit then
     while #t > limit do
       table.remove(t)
     end
+  end
+  for i = 1, #t do
+    t[i] = i
   end
   return t
 end
