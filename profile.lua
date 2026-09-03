@@ -171,7 +171,7 @@ function profile.query(limit)
     end
   end
   for i = 1, #t do
-    t[i] = i
+    t[i][1] = i
   end
   return t
 end
